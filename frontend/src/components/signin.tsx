@@ -1,39 +1,50 @@
-import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
+import {   signInWithPopup } from "firebase/auth";
 import { useState } from "react";
+import { auth } from "../App";
+
+import { GoogleAuthProvider } from "firebase/auth";
+
+const provider = new GoogleAuthProvider();
 
 const actionCodeSettings = {
-  url: 'http://localhost:3000',
+  url: 'http://localhost:5173',
   // This must be true.
   handleCodeInApp: true,
 };
 
 export const Signin = ()=>{
-    const auth=getAuth();
     const [email, setEmail] = useState("");
 
 
 
     async function Onsignin(){
-        await sendSignInLinkToEmail(auth, email, actionCodeSettings)
-            .then(() => {
-                // The link was successfully sent. Inform the user.
-                // Save the email locally so you don't need to ask the user for it again
-                // if they open the link on the same device.
-                window.localStorage.setItem('emailForSignIn', email);
-                alert("Email sent");
+        await signInWithPopup(auth, provider)
+            .then((result) => {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                if (!credential) {
+                    return;
+                }
+                const token = credential.accessToken;
+                // The signed-in user info.
+                const user = result.user;
+                // IdP data available using getAdditionalUserInfo(result)
                 // ...
-            })
-            .catch((error) => {
+            }).catch((error) => {
+                // Handle Errors here.
                 const errorCode = error.code;
                 const errorMessage = error.message;
+                // The email of the user's account used.
+                const email = error.customData.email;
+                // The AuthCredential type that was used.
+                const credential = GoogleAuthProvider.credentialFromError(error);
                 // ...
             });
     }
     
     return <div>
-        <input type="text" placeholder="Email" onChange={(e) =>{
-            setEmail(e.target.value);
-        }}></input>
-        <button onClick={Onsignin}>Sign Up</button>
+        <img src="
+https://www.gstatic.com/images/branding/googleg_gradient/1x/googleg_gradient_standard_20dp.png" alt="google logo" />
+        <button onClick={Onsignin}>Login with google</button>
     </div>
 }
