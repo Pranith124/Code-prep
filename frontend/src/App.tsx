@@ -7,6 +7,7 @@ import { RecoilRoot, useRecoilState } from 'recoil';
 import { userAtom } from './store/atoms/user';
 import { Topbar } from './components/topbar';
 import { PosterBar } from './components/poster_bar';
+import { Sidebar } from './components/sidebar';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDQaL49JvubDtZx55pRVsQWnpGtBIy9g3Q",
@@ -59,8 +60,12 @@ function StoreApp(){
   return (
 <div >
     <Topbar />
+    <div className='mx-auto w-full grow lg:max-w-screen-xl dark:bg-dark-layer-bg lc-dsw-xl:max-w-none flex bg-white p-0 md:max-w-none md:p-0'>
+    <div className='flex w-full flex-1'>
+    <Sidebar/>
     <PosterBar/>
-    <h1>Welcome {user.user?.email}</h1>
+    </div>
+    </div>
   </div>)
 };
 
